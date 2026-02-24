@@ -1,5 +1,6 @@
 services:
     laravel.test:
+        container_name: blog
         build:
             context: ./vendor/laravel/sail/runtimes/8.5
             dockerfile: Dockerfile
@@ -26,6 +27,7 @@ services:
             - mariadb
             - mailpit
     mariadb:
+        container_name: mariadb
         image: 'mariadb:11'
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
@@ -50,12 +52,29 @@ services:
             retries: 3
             timeout: 5s
     mailpit:
+        container_name: mailpit
         image: 'axllent/mailpit:latest'
         ports:
             - '${FORWARD_MAILPIT_PORT:-1025}:1025'
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
         networks:
             - sail
+    phpmyadmin:
+        container_name: phpmyadmin
+        image: phpmyadmin/phpmyadmin:latest
+        restart: always
+        links:
+            - mariadb:mariadb
+        ports:
+            - 8080:80
+        environment:
+            MYSQL_USERNAME: "${DB_USERNAME}"
+            MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+            PMA_HOST: mariadb
+        networks:
+            - sail
+        depends_on:
+        - mariadb
 networks:
     sail:
         driver: bridge
