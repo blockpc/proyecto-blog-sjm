@@ -11,8 +11,6 @@
 |
 */
 
-use Database\Seeders\RolesAndPermissionsSeeder;
-
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
@@ -27,8 +25,6 @@ pest()->extend(Tests\TestCase::class)
 | to assert different things. Of course, you may extend the Expectation API at any time.
 |
 */
-
-
 
 /*
 |--------------------------------------------------------------------------

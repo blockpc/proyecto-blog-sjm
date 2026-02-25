@@ -32,9 +32,8 @@ final class SyncPermissionsCommand extends Command
 
         if ($errors > 0) {
             $this->error("Errores de sincronización de permisos: {$errors}");
-            if ($this->option('ci')) {
-                Log::error("Errores de sincronización de permisos: {$errors}");
-            }
+            Log::error("Errores de sincronización de permisos: {$errors}");
+
             return 1;
         }
 
@@ -47,6 +46,7 @@ final class SyncPermissionsCommand extends Command
 
         if ($missing->isEmpty()) {
             $this->info('✅ Todo sincronizado.');
+
             return 0;
         }
 
@@ -67,6 +67,7 @@ final class SyncPermissionsCommand extends Command
 
         if ($orphans->isEmpty()) {
             $this->info('✅ No hay permisos huérfanos.');
+
             return 0;
         }
 
@@ -84,11 +85,13 @@ final class SyncPermissionsCommand extends Command
 
         if ($orphans->isEmpty()) {
             $this->info('✅ No hay permisos huérfanos.');
+
             return 0;
         }
 
         if (! $this->option('ci') && ! $this->confirm("¿Eliminar {$orphans->count()} permisos huérfanos?", false)) {
             $this->info('🛑 Cancelado.');
+
             return 0;
         }
 

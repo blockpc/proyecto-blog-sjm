@@ -24,7 +24,7 @@ final class PermissionList
         ];
     }
 
-    private static function system()
+    private static function system(): array
     {
         return [
             ['super admin', 'sudo', 'Permiso de Super Usuario. El usuario con este permiso tiene acceso total al sistema. No necesita ningún otro permiso', 'Super usuario'],

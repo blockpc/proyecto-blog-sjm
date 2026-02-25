@@ -200,5 +200,5 @@ return [
         'store' => 'default',
     ],
 
-    'testing' => env('PERMISSION_TESTING', false)
+    'testing' => env('PERMISSION_TESTING', false),
 ];

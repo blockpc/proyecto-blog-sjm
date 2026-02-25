@@ -8,5 +8,5 @@ use Spatie\Permission\Models\Role as ModelsRole;
 
 final class Role extends ModelsRole
 {
-    protected $fillable = ['name', 'display_name', 'description', 'key', 'guard_name'];
+    protected $fillable = ['name', 'display_name', 'description', 'guard_name'];
 }

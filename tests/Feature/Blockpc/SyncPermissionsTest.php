@@ -7,6 +7,8 @@ use Blockpc\App\Lists\PermissionList;
 use Blockpc\App\Services\PermissionSynchronizerService;
 use Database\Seeders\RolesAndPermissionsSeeder;
 
+use function Pest\Laravel\assertDatabaseHas;
+
 uses()->group('sistema', 'permissions');
 
 beforeEach(function () {
@@ -39,4 +41,21 @@ it('todos los permisos están registrados y sincronizados', function () {
 
     expect($missing->isEmpty())->toBeTrue('Hay permisos faltantes');
     expect($outdated->isEmpty())->toBeTrue('Hay permisos desactualizados');
+});
+
+it('un permiso actualizado manualmente no se sobreescribe con el servicio', function ()
+{
+    $sudo = Permission::where('name', 'super admin')->firstOrFail();
+
+    $sudo->description = 'Descripción modificada manualmente';
+    $sudo->save();
+
+    $sync = app(PermissionSynchronizerService::class);
+
+    $sync->sync();
+
+    assertDatabaseHas('permissions', [
+        'name' => 'super admin',
+        'description' => 'Descripción modificada manualmente',
+    ]);
 });

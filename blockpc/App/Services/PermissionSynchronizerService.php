@@ -22,6 +22,8 @@ final class PermissionSynchronizerService
                 ['key' => $key, 'description' => $description, 'display_name' => $displayName]
             );
         }
+
+        $this->existingPermissions = null;
     }
 
     private function ensureExistingPermissionsLoaded(): Collection
@@ -58,9 +60,7 @@ final class PermissionSynchronizerService
                     return false;
                 }
 
-                return $perm->key !== $key
-                    || $perm->description !== $description
-                    || $perm->display_name !== $displayName;
+                return $perm->key !== $key;
             });
     }
 
@@ -69,6 +69,7 @@ final class PermissionSynchronizerService
         $existingPermissions = $this->ensureExistingPermissionsLoaded();
         $defined = collect(PermissionList::all())->keyBy(function ($p) {
             $guard = $p[4] ?? 'web';
+
             return "{$p[0]}|{$guard}";
         });
 
@@ -83,6 +84,8 @@ final class PermissionSynchronizerService
         foreach ($orphans as $orphan) {
             $orphan->delete();
         }
+
+        $this->existingPermissions = null;
 
         return $orphans->count();
     }
