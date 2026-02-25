@@ -6,6 +6,8 @@ namespace Blockpc\App\Providers;
 
 use Blockpc\App\Commands\SyncPermissionsCommand;
 use Blockpc\App\Commands\SyncRolesCommand;
+use Blockpc\App\Mixins\Search;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\ServiceProvider;
 
 class BlockpcServiceProvider extends ServiceProvider
@@ -15,7 +17,7 @@ class BlockpcServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        Builder::mixin(new Search);
     }
 
     /**
