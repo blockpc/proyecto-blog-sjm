@@ -34,6 +34,8 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 ## Conventions
 
+- Usar siempre `./vendor/bin/sail` para ejecutar comandos de Laravel/PHP en este proyecto.
+- Escribir y mantener tests con **Pest** (no PHPUnit estilo clásico), siguiendo la convención existente.
 - You must follow all existing code conventions used in this application. When creating or editing a file, check sibling files for the correct structure, approach, and naming.
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
 - Check for existing components to reuse before writing a new one.
@@ -249,6 +251,7 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 ## Pest
 
+- Escribir y mantener tests con **Pest** (no PHPUnit estilo clásico), siguiendo la convención existente.
 - This project uses Pest for testing. Create tests: `php artisan make:test --pest {name}`.
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
