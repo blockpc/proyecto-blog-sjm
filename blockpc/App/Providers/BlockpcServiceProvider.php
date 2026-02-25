@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Blockpc\App\Providers;
 
 use Blockpc\App\Commands\SyncPermissionsCommand;
+use Blockpc\App\Commands\SyncRolesCommand;
 use Illuminate\Support\ServiceProvider;
 
 class BlockpcServiceProvider extends ServiceProvider
@@ -33,6 +34,7 @@ class BlockpcServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 SyncPermissionsCommand::class,
+                SyncRolesCommand::class,
             ]);
         }
     }

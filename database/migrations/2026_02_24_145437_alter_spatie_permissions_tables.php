@@ -22,6 +22,7 @@ return new class extends Migration
         Schema::table($tableNames['roles'], static function (Blueprint $table) {
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
+            $table->boolean('is_editable')->default(false);
         });
     }
 
@@ -37,7 +38,7 @@ return new class extends Migration
         });
 
         Schema::table($tableNames['roles'], static function (Blueprint $table) {
-            $table->dropColumn(['display_name', 'description']);
+            $table->dropColumn(['display_name', 'description', 'is_editable']);
         });
     }
 };

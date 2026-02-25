@@ -15,7 +15,11 @@ final class PermissionSynchronizerService
     public function sync(): void
     {
         foreach (PermissionList::all() as $permiso) {
-            [$name, $key, $description, $displayName, $guard] = $permiso + [null, null, null, null, 'web'];
+            $name = $permiso['name'] ?? null;
+            $key = $permiso['key'] ?? null;
+            $description = $permiso['description'] ?? null;
+            $displayName = $permiso['display_name'] ?? null;
+            $guard = $permiso['guard_name'] ?? 'web';
 
             Permission::query()->firstOrCreate(
                 ['name' => $name, 'guard_name' => $guard],
@@ -29,7 +33,7 @@ final class PermissionSynchronizerService
     private function ensureExistingPermissionsLoaded(): Collection
     {
         if ($this->existingPermissions === null) {
-            $this->existingPermissions = Permission::all()->keyBy(fn ($perm) => "{$perm->name}|{$perm->guard_name}");
+            $this->existingPermissions = Permission::all()->keyBy(fn ($permission) => "{$permission->name}|{$permission->guard_name}");
         }
 
         return $this->existingPermissions;
@@ -41,7 +45,8 @@ final class PermissionSynchronizerService
 
         return collect(PermissionList::all())
             ->filter(function ($permiso) use ($existing) {
-                [$name, $key, $description, $displayName, $guard] = $permiso + [null, null, null, null, 'web'];
+                $name = $permiso['name'] ?? null;
+                $guard = $permiso['guard_name'] ?? 'web';
 
                 return ! $existing->has("{$name}|{$guard}");
             });
@@ -53,7 +58,10 @@ final class PermissionSynchronizerService
 
         return collect(PermissionList::all())
             ->filter(function ($permiso) use ($existing) {
-                [$name, $key, $description, $displayName, $guard] = $permiso + [null, null, null, null, 'web'];
+                $name = $permiso['name'] ?? null;
+                $guard = $permiso['guard_name'] ?? 'web';
+                $key = $permiso['key'] ?? null;
+
                 $perm = $existing->get("{$name}|{$guard}");
 
                 if (! $perm) {
@@ -67,10 +75,11 @@ final class PermissionSynchronizerService
     public function getOrphans(): Collection
     {
         $existingPermissions = $this->ensureExistingPermissionsLoaded();
-        $defined = collect(PermissionList::all())->keyBy(function ($p) {
-            $guard = $p[4] ?? 'web';
+        $defined = collect(PermissionList::all())->keyBy(function ($permiso) {
+            $name = $permiso['name'] ?? null;
+            $guard = $permiso['guard_name'] ?? 'web';
 
-            return "{$p[0]}|{$guard}";
+            return "{$name}|{$guard}";
         });
 
         return $existingPermissions->filter(function ($perm) use ($defined) {

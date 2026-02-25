@@ -14,7 +14,6 @@ final class PermissionList
      * - description: Descripción del permiso
      * - display_name: Nombre para mostrar del permiso
      * - guard_name: Nombre del guard (opcional, por defecto 'web')
-     * [name, key, description, display_name, guard_name (, opcional:web)]
      */
     public static function all(): array
     {
@@ -27,7 +26,13 @@ final class PermissionList
     private static function system(): array
     {
         return [
-            ['super admin', 'sudo', 'Permiso de Super Usuario. El usuario con este permiso tiene acceso total al sistema. No necesita ningún otro permiso', 'Super usuario'],
+            [
+                'name' => 'super admin',
+                'key' => 'sudo',
+                'display_name' => 'Super Administrador',
+                'description' => 'Permiso de Super Usuario. El usuario con este permiso tiene acceso total al sistema. No necesita ningún otro permiso',
+                'guard_name' => 'web',
+            ],
         ];
     }
 }

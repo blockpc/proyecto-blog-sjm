@@ -19,10 +19,8 @@ beforeEach(function () {
 
 it('todos los permisos definidos están registrados con su guard_name', function () {
     foreach (PermissionList::all() as $permiso) {
-        // Asegurar que haya al menos los primeros 4 campos definidos
-        expect(count($permiso))->toBeGreaterThanOrEqual(4);
-
-        [$name, $key, $description, $displayName, $guard] = array_pad($permiso, 5, 'web');
+        $name = $permiso['name'];
+        $guard = $permiso['guard_name'] ?? 'web';
 
         $existe = Permission::where('name', $name)
             ->where('guard_name', $guard)
@@ -43,8 +41,7 @@ it('todos los permisos están registrados y sincronizados', function () {
     expect($outdated->isEmpty())->toBeTrue('Hay permisos desactualizados');
 });
 
-it('un permiso actualizado manualmente no se sobreescribe con el servicio', function ()
-{
+it('un permiso actualizado manualmente no se sobreescribe con el servicio', function () {
     $sudo = Permission::where('name', 'super admin')->firstOrFail();
 
     $sudo->description = 'Descripción modificada manualmente';
