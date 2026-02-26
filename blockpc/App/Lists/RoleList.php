@@ -20,6 +20,14 @@ final class RoleList
     public static function all(): array
     {
         return [
+            ...self::system(),
+            // Agregar aquí otros roles específicos de la aplicación
+        ];
+    }
+
+    private static function system(): array
+    {
+        return [
             [
                 'name' => 'sudo',
                 'display_name' => 'Super Administrador',

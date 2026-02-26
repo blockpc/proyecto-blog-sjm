@@ -21,7 +21,7 @@ final class RoleSynchronizerService
                 'display_name' => $roleData['display_name'] ?? null,
                 'description' => $roleData['description'] ?? null,
                 'is_editable' => $roleData['is_editable'] ?? true,
-                'guard_name' => $roleData['guard'] ?? 'web',
+                'guard_name' => $roleData['guard_name'] ?? $roleData['guard'] ?? 'web',
             ]);
         }
 

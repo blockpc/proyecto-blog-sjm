@@ -20,6 +20,7 @@ final class SyncPermissionsCommand extends Command
 
     public function handle(PermissionSynchronizerService $sync): int
     {
+        $errors = 0;
         $check = (bool) $this->option('check');
         $orphans = (bool) $this->option('orphans');
         $prune = (bool) $this->option('prune');
