@@ -20,14 +20,27 @@ final class SyncRolesCommand extends Command
 
     public function handle(RoleSynchronizerService $sync): int
     {
-        if ($this->option('check')) {
+        $check = (bool) $this->option('check');
+        $orphans = (bool) $this->option('orphans');
+        $prune = (bool) $this->option('prune');
+
+        $selectedActions = array_filter([$check, $orphans, $prune]);
+
+        if (count($selectedActions) > 1) {
+            $this->error('Las opciones --check, --orphans y --prune son mutuamente excluyentes. Usa solo una.');
+
+            return 1;
+        }
+
+        if ($check) {
             $errors = $this->handleCheck($sync);
-        } elseif ($this->option('orphans')) {
+        } elseif ($orphans) {
             $errors = $this->handleOrphans($sync);
-        } elseif ($this->option('prune')) {
+        } elseif ($prune) {
             $errors = $this->handlePrune($sync);
         } else {
             $this->handleSync($sync);
+            $errors = 0;
         }
 
         if ($errors > 0) {

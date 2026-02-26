@@ -19,7 +19,6 @@ final class RoleList
      */
     public static function all(): array
     {
-        // [name, display_name, description, is_editable, permissions, guard_name (opcional:web)]
         return [
             [
                 'name' => 'sudo',

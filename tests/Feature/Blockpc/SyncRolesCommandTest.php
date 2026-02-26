@@ -167,19 +167,22 @@ it('integración completa: sync después de detectar roles faltantes', function 
         ->assertExitCode(0);
 });
 
-it('las opciones check, orphans y prune tienen la prioridad correcta', function () {
-    // check tiene prioridad sobre orphans
+it('las opciones check, orphans y prune son mutuamente excluyentes', function () {
+    $errorMessage = 'Las opciones --check, --orphans y --prune son mutuamente excluyentes. Usa solo una.';
+
     artisan('blockpc:roles --check --orphans')
-        ->expectsOutput('✅ Todo sincronizado.')
-        ->assertExitCode(0);
+        ->expectsOutput($errorMessage)
+        ->assertExitCode(1);
 
-    // check tiene prioridad sobre prune
     artisan('blockpc:roles --check --prune')
-        ->expectsOutput('✅ Todo sincronizado.')
-        ->assertExitCode(0);
+        ->expectsOutput($errorMessage)
+        ->assertExitCode(1);
 
-    // orphans tiene prioridad sobre prune
     artisan('blockpc:roles --orphans --prune')
-        ->expectsOutput('✅ No hay roles huérfanos.')
-        ->assertExitCode(0);
+        ->expectsOutput($errorMessage)
+        ->assertExitCode(1);
+
+    artisan('blockpc:roles --check --orphans --prune')
+        ->expectsOutput($errorMessage)
+        ->assertExitCode(1);
 });

@@ -176,21 +176,24 @@ it('integración completa: sync después de detectar permisos faltantes', functi
         ->assertExitCode(0);
 });
 
-it('las opciones check, orphans y prune tienen la prioridad correcta', function () {
-    // check tiene prioridad sobre orphans
+it('las opciones check, orphans y prune son mutuamente excluyentes', function () {
+    $errorMessage = 'Las opciones --check, --orphans y --prune son mutuamente excluyentes. Usa solo una.';
+
     artisan('blockpc:permissions --check --orphans')
-        ->expectsOutput('✅ Todo sincronizado.')
-        ->assertExitCode(0);
+        ->expectsOutput($errorMessage)
+        ->assertExitCode(1);
 
-    // check tiene prioridad sobre prune
     artisan('blockpc:permissions --check --prune')
-        ->expectsOutput('✅ Todo sincronizado.')
-        ->assertExitCode(0);
+        ->expectsOutput($errorMessage)
+        ->assertExitCode(1);
 
-    // orphans tiene prioridad sobre prune
     artisan('blockpc:permissions --orphans --prune')
-        ->expectsOutput('✅ No hay permisos huérfanos.')
-        ->assertExitCode(0);
+        ->expectsOutput($errorMessage)
+        ->assertExitCode(1);
+
+    artisan('blockpc:permissions --check --orphans --prune')
+        ->expectsOutput($errorMessage)
+        ->assertExitCode(1);
 });
 
 it('el comando sync persiste permisos con todas sus propiedades', function () {
