@@ -82,14 +82,19 @@ final class PermissionSynchronizerService
     public function prune(): int
     {
         $orphans = $this->getOrphans();
-        $count = $orphans->count();
-        Permission::query()->whereIn('id', $orphans->pluck('id'))->delete();
+        $deleted = Permission::query()->whereIn('id', $orphans->pluck('id'))->delete();
 
         $this->existingPermissions = null;
 
-        return $count;
+        return $deleted;
     }
 
+    /**
+     * Extracts permission fields from array definition.
+     *
+     * @param  array{name?: string, key?: string, description?: string, display_name?: string, guard_name?: string}  $permiso
+     * @return array{0: ?string, 1: ?string, 2: ?string, 3: ?string, 4: string} [name, key, description, displayName, guard]
+     */
     private function resolvePermiso(array $permiso): array
     {
         return [

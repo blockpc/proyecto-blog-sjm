@@ -12,7 +12,7 @@ final class RoleSynchronizerService
 {
     private ?Collection $existingRoles = null;
 
-    public function sync()
+    public function sync(): void
     {
         $missing = $this->getMissing();
         foreach ($missing as $roleData) {

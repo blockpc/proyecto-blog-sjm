@@ -40,8 +40,7 @@ final class SyncRolesCommand extends Command
         } elseif ($prune) {
             $errors = $this->handlePrune($sync);
         } else {
-            $this->handleSync($sync);
-            $errors = 0;
+            $errors = $this->handleSync($sync);
         }
 
         if ($errors > 0) {
@@ -114,9 +113,11 @@ final class SyncRolesCommand extends Command
         return 0;
     }
 
-    private function handleSync(RoleSynchronizerService $sync): void
+    private function handleSync(RoleSynchronizerService $sync): int
     {
         $sync->sync();
         $this->info('🎉 Roles sincronizados.');
+
+        return 0;
     }
 }
