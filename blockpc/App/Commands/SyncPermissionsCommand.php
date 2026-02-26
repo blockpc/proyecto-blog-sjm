@@ -53,7 +53,8 @@ final class SyncPermissionsCommand extends Command
         $this->warn('⚠️  Permisos faltantes:');
         $errors = 0;
         foreach ($missing as $perm) {
-            [$name, , , , $guard] = $perm + [null, null, null, null, 'web'];
+            $name = $perm['name'] ?? null;
+            $guard = $perm['guard_name'] ?? 'web';
             $this->warn("❌ Falta permiso: {$name} (guard: {$guard})");
             $errors++;
         }
