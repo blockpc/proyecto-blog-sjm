@@ -98,7 +98,7 @@ it('prune elimina solo roles huérfanos editables y devuelve el total eliminado'
 
     expect($deleted)->toBe(1);
     expect(Role::find($editableOrphan->id))->toBeNull();
-    expect(Role::find($protectedOrphan->id))->not->toBeNull();
+    expect(Role::find($protectedOrphan->id))->not()->toBeNull();
 });
 
 it('prune devuelve cero cuando no hay roles huérfanos', function () {
