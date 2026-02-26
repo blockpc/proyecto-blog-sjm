@@ -15,11 +15,7 @@ final class PermissionSynchronizerService
     public function sync(): void
     {
         foreach (PermissionList::all() as $permiso) {
-            $name = $permiso['name'] ?? null;
-            $key = $permiso['key'] ?? null;
-            $description = $permiso['description'] ?? null;
-            $displayName = $permiso['display_name'] ?? null;
-            $guard = $permiso['guard_name'] ?? 'web';
+            [$name, $key, $description, $displayName, $guard] = $this->resolvePermiso($permiso);
 
             Permission::query()->firstOrCreate(
                 ['name' => $name, 'guard_name' => $guard],
@@ -45,8 +41,7 @@ final class PermissionSynchronizerService
 
         return collect(PermissionList::all())
             ->filter(function ($permiso) use ($existing) {
-                $name = $permiso['name'] ?? null;
-                $guard = $permiso['guard_name'] ?? 'web';
+                [$name, , , , $guard] = $this->resolvePermiso($permiso);
 
                 return ! $existing->has("{$name}|{$guard}");
             });
@@ -58,9 +53,7 @@ final class PermissionSynchronizerService
 
         return collect(PermissionList::all())
             ->filter(function ($permiso) use ($existing) {
-                $name = $permiso['name'] ?? null;
-                $guard = $permiso['guard_name'] ?? 'web';
-                $key = $permiso['key'] ?? null;
+                [$name, $key, , , $guard] = $this->resolvePermiso($permiso);
 
                 $perm = $existing->get("{$name}|{$guard}");
 
@@ -76,8 +69,7 @@ final class PermissionSynchronizerService
     {
         $existingPermissions = $this->ensureExistingPermissionsLoaded();
         $defined = collect(PermissionList::all())->keyBy(function ($permiso) {
-            $name = $permiso['name'] ?? null;
-            $guard = $permiso['guard_name'] ?? 'web';
+            [$name, , , , $guard] = $this->resolvePermiso($permiso);
 
             return "{$name}|{$guard}";
         });
@@ -90,12 +82,22 @@ final class PermissionSynchronizerService
     public function prune(): int
     {
         $orphans = $this->getOrphans();
-        foreach ($orphans as $orphan) {
-            $orphan->delete();
-        }
+        $count = $orphans->count();
+        Permission::query()->whereIn('id', $orphans->pluck('id'))->delete();
 
         $this->existingPermissions = null;
 
-        return $orphans->count();
+        return $count;
+    }
+
+    private function resolvePermiso(array $permiso): array
+    {
+        return [
+            $permiso['name'] ?? null,
+            $permiso['key'] ?? null,
+            $permiso['description'] ?? null,
+            $permiso['display_name'] ?? null,
+            $permiso['guard_name'] ?? 'web',
+        ];
     }
 }
