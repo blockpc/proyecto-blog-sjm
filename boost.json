@@ -2,5 +2,8 @@
     "agents": [
         "copilot"
     ],
-    "guidelines": true
+    "guidelines": true,
+    "packages": [
+        "spatie/laravel-permission"
+    ]
 }
