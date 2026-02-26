@@ -20,8 +20,6 @@ final class SyncRolesCommand extends Command
 
     public function handle(RoleSynchronizerService $sync): int
     {
-        $errors = 0;
-
         if ($this->option('check')) {
             $errors = $this->handleCheck($sync);
         } elseif ($this->option('orphans')) {
