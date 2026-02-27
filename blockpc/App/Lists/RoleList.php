@@ -13,7 +13,6 @@ final class RoleList
      * - display_name: Nombre para mostrar del role
      * - description: Descripción del role
      * - is_editable: Indica si el role es editable o no
-     * - permissions: Lista de permisos asociados al role
      * - guard_name: Nombre del guard (opcional, por defecto 'web')
      * [name, display_name, description, is_editable, permissions, guard_name (, opcional:web)]
      */
@@ -33,7 +32,6 @@ final class RoleList
                 'display_name' => 'Super Administrador',
                 'description' => 'Usuario del sistema con acceso total',
                 'is_editable' => false,
-                'permissions' => [],
                 'guard_name' => 'web',
             ],
             [
@@ -41,9 +39,6 @@ final class RoleList
                 'display_name' => 'Administrador',
                 'description' => 'Usuario del sistema con acceso general',
                 'is_editable' => true,
-                'permissions' => [
-                    // ... permisos de admin
-                ],
                 'guard_name' => 'web',
             ],
             [
@@ -51,9 +46,6 @@ final class RoleList
                 'display_name' => 'Usuario',
                 'description' => 'Usuario por defecto del sistema',
                 'is_editable' => true,
-                'permissions' => [
-                    // ... permisos de user
-                ],
                 'guard_name' => 'web',
             ],
         ];

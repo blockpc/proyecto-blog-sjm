@@ -18,7 +18,7 @@ final class SyncRolesCommand extends Command
 
     protected $description = 'Sincroniza, valida y limpia los roles definidos en el sistema';
 
-    public function handle(RoleSynchronizerService $sync): int
+    public function handle(RoleSynchronizerService $roleSynchronizerService): int
     {
         $errors = 0;
         $check = (bool) $this->option('check');
@@ -34,13 +34,13 @@ final class SyncRolesCommand extends Command
         }
 
         if ($check) {
-            $errors = $this->handleCheck($sync);
+            $errors = $this->handleCheck($roleSynchronizerService);
         } elseif ($orphans) {
-            $errors = $this->handleOrphans($sync);
+            $errors = $this->handleOrphans($roleSynchronizerService);
         } elseif ($prune) {
-            $errors = $this->handlePrune($sync);
+            $errors = $this->handlePrune($roleSynchronizerService);
         } else {
-            $errors = $this->handleSync($sync);
+            $errors = $this->handleSync($roleSynchronizerService);
         }
 
         if ($errors > 0) {

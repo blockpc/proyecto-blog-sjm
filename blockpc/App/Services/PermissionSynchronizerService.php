@@ -92,11 +92,15 @@ final class PermissionSynchronizerService
     /**
      * Extracts permission fields from array definition.
      *
-     * @param  array{name?: string, key?: string, description?: string, display_name?: string, guard_name?: string}  $permiso
-     * @return array{0: ?string, 1: ?string, 2: ?string, 3: ?string, 4: string} [name, key, description, displayName, guard]
+     * @param  array{name: string, key?: string, description?: string, display_name?: string, guard_name?: string}  $permiso
+     * @return array{0: string, 1: ?string, 2: ?string, 3: ?string, 4: string} [name, key, description, displayName, guard]
      */
     private function resolvePermiso(array $permiso): array
     {
+        if (! $permiso['name']) {
+            throw new \InvalidArgumentException('Permission name is required');
+        }
+
         return [
             $permiso['name'] ?? null,
             $permiso['key'] ?? null,

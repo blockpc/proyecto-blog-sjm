@@ -7,7 +7,7 @@ use Database\Seeders\RolesAndPermissionsSeeder;
 
 use function Pest\Laravel\assertDatabaseHas;
 
-uses()->group('sistema', 'permissions');
+uses()->group('sistema', 'roles');
 
 beforeEach(function () {
     $this->seed(RolesAndPermissionsSeeder::class);

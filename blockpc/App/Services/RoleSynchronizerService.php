@@ -21,7 +21,7 @@ final class RoleSynchronizerService
                 'display_name' => $roleData['display_name'] ?? null,
                 'description' => $roleData['description'] ?? null,
                 'is_editable' => $roleData['is_editable'] ?? true,
-                'guard_name' => $roleData['guard_name'] ?? $roleData['guard'] ?? 'web',
+                'guard_name' => $this->resolveGuardName($roleData),
             ]);
         }
 
@@ -95,5 +95,13 @@ final class RoleSynchronizerService
         }
 
         return $deleted;
+    }
+
+    /**
+     * `@param` array{name:string,guard_name?:string,guard?:string} $roleData
+     */
+    private function resolveGuardName(array $roleData): string
+    {
+        return $roleData['guard_name'] ?? $roleData['guard'] ?? 'web';
     }
 }

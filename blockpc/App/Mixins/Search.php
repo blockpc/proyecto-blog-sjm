@@ -23,21 +23,24 @@ final class Search
             }
 
             $escapedSearchTerm = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $searchTerm);
+            $searchPattern = "%{$escapedSearchTerm}%";
 
-            $this->where(function (Builder $query) use ($attributes, $escapedSearchTerm) {
+            $this->where(function (Builder $query) use ($attributes, $searchPattern) {
                 foreach (Arr::wrap($attributes) as $attribute) {
                     $query->when(
                         str_contains($attribute, '.'),
-                        function (Builder $query) use ($attribute, $escapedSearchTerm) {
+                        function (Builder $query) use ($attribute, $searchPattern) {
                             $buffer = explode('.', $attribute);
                             $attributeField = array_pop($buffer);
                             $relationPath = implode('.', $buffer);
-                            $query->orWhereHas($relationPath, function (Builder $query) use ($attributeField, $escapedSearchTerm) {
-                                $query->distinct()->where($attributeField, 'LIKE', "%{$escapedSearchTerm}%");
+                            $query->orWhereHas($relationPath, function (Builder $query) use ($attributeField, $searchPattern) {
+                                $wrappedColumn = $query->getQuery()->getGrammar()->wrap($attributeField);
+                                $query->whereRaw("{$wrappedColumn} LIKE ? ESCAPE '\\\\'", [$searchPattern]);
                             });
                         },
-                        function (Builder $query) use ($attribute, $escapedSearchTerm) {
-                            $query->orWhere($attribute, 'LIKE', "%{$escapedSearchTerm}%");
+                        function (Builder $query) use ($attribute, $searchPattern) {
+                            $wrappedColumn = $query->getQuery()->getGrammar()->wrap($attribute);
+                            $query->orWhereRaw("{$wrappedColumn} LIKE ? ESCAPE '\\\\'", [$searchPattern]);
                         }
                     );
                 }
