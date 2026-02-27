@@ -28,7 +28,7 @@ final class RoleList
     /**
      * Devuelve los roles por defecto del sistema.
      *
-     * @return array<int, array{name: string, display_name: string, description: string, is_editable: bool, guard_name: string}
+     * @return array<int, array{name: string, display_name: string, description: string, is_editable: bool, guard_name: string}>
      */
     private static function system(): array
     {
