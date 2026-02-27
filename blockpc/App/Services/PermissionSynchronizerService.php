@@ -97,12 +97,14 @@ final class PermissionSynchronizerService
      */
     private function resolvePermiso(array $permiso): array
     {
-        if (! $permiso['name']) {
+        $name = $permiso['name'] ?? null;
+
+        if (! is_string($name) || trim($name) === '') {
             throw new \InvalidArgumentException('Permission name is required');
         }
 
         return [
-            $permiso['name'] ?? null,
+            $name,
             $permiso['key'] ?? null,
             $permiso['description'] ?? null,
             $permiso['display_name'] ?? null,

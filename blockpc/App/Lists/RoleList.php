@@ -20,7 +20,6 @@ final class RoleList
     {
         return [
             ...self::system(),
-            // Agregar aquí otros roles específicos de la aplicación
         ];
     }
 

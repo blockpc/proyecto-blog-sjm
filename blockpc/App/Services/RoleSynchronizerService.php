@@ -44,7 +44,7 @@ final class RoleSynchronizerService
         return collect(RoleList::all())
             ->filter(function ($role) use ($existing) {
                 $name = $role['name'];
-                $guard = $role['guard_name'] ?? 'web';
+                $guard = $this->resolveGuardName($role);
 
                 return ! $existing->has("{$name}|{$guard}");
             });
@@ -58,7 +58,7 @@ final class RoleSynchronizerService
         return $existing->filter(function ($role) use ($defined) {
             return ! $defined->contains(function ($definedRole) use ($role) {
                 $name = $definedRole['name'];
-                $guard = $definedRole['guard_name'] ?? 'web';
+                $guard = $this->resolveGuardName($definedRole);
 
                 return $name === $role->name && $guard === $role->guard_name;
             });
@@ -72,7 +72,7 @@ final class RoleSynchronizerService
         return collect(RoleList::all())
             ->filter(function ($role) use ($existing) {
                 $name = $role['name'];
-                $guard = $role['guard_name'] ?? 'web';
+                $guard = $this->resolveGuardName($role);
                 $role = $existing->get("{$name}|{$guard}");
 
                 if (! $role) {
@@ -98,7 +98,14 @@ final class RoleSynchronizerService
     }
 
     /**
-     * `@param` array{name:string,guard_name?:string,guard?:string} $roleData
+     * `@param` array{
+     *   name: string,
+     *   display_name?: string,
+     *   description?: string,
+     *   is_editable?: bool,
+     *   guard_name?: string,
+     *   guard?: string
+     * } $roleData
      */
     private function resolveGuardName(array $roleData): string
     {

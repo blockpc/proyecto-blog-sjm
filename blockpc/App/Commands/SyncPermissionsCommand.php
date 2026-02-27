@@ -18,7 +18,7 @@ final class SyncPermissionsCommand extends Command
 
     protected $description = 'Sincroniza, valida y limpia los permisos definidos en el sistema';
 
-    public function handle(PermissionSynchronizerService $sync): int
+    public function handle(PermissionSynchronizerService $permissionSynchronizerService): int
     {
         $errors = 0;
         $check = (bool) $this->option('check');
@@ -34,13 +34,13 @@ final class SyncPermissionsCommand extends Command
         }
 
         if ($check) {
-            $errors = $this->handleCheck($sync);
+            $errors = $this->handleCheck($permissionSynchronizerService);
         } elseif ($orphans) {
-            $errors = $this->handleOrphans($sync);
+            $errors = $this->handleOrphans($permissionSynchronizerService);
         } elseif ($prune) {
-            $errors = $this->handlePrune($sync);
+            $errors = $this->handlePrune($permissionSynchronizerService);
         } else {
-            $errors = $this->handleSync($sync);
+            $errors = $this->handleSync($permissionSynchronizerService);
         }
 
         if ($errors > 0) {
@@ -53,9 +53,9 @@ final class SyncPermissionsCommand extends Command
         return 0;
     }
 
-    private function handleCheck(PermissionSynchronizerService $sync): int
+    private function handleCheck(PermissionSynchronizerService $permissionSynchronizerService): int
     {
-        $missing = $sync->getMissing();
+        $missing = $permissionSynchronizerService->getMissing();
 
         if ($missing->isEmpty()) {
             $this->info('✅ Todo sincronizado.');
@@ -75,9 +75,9 @@ final class SyncPermissionsCommand extends Command
         return $errors;
     }
 
-    private function handleOrphans(PermissionSynchronizerService $sync): int
+    private function handleOrphans(PermissionSynchronizerService $permissionSynchronizerService): int
     {
-        $orphans = $sync->getOrphans();
+        $orphans = $permissionSynchronizerService->getOrphans();
 
         if ($orphans->isEmpty()) {
             $this->info('✅ No hay permisos huérfanos.');
@@ -93,9 +93,9 @@ final class SyncPermissionsCommand extends Command
         return $orphans->count();
     }
 
-    private function handlePrune(PermissionSynchronizerService $sync): int
+    private function handlePrune(PermissionSynchronizerService $permissionSynchronizerService): int
     {
-        $orphans = $sync->getOrphans();
+        $orphans = $permissionSynchronizerService->getOrphans();
 
         if ($orphans->isEmpty()) {
             $this->info('✅ No hay permisos huérfanos.');
@@ -109,15 +109,15 @@ final class SyncPermissionsCommand extends Command
             return 0;
         }
 
-        $deleted = $sync->prune();
+        $deleted = $permissionSynchronizerService->prune();
         $this->info("🗑️ Eliminados: {$deleted} permisos huérfanos.");
 
         return 0;
     }
 
-    private function handleSync(PermissionSynchronizerService $sync): int
+    private function handleSync(PermissionSynchronizerService $permissionSynchronizerService): int
     {
-        $sync->sync();
+        $permissionSynchronizerService->sync();
         $this->info('🎉 Permisos sincronizados.');
 
         return 0;
