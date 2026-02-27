@@ -98,7 +98,7 @@ final class RoleSynchronizerService
     }
 
     /**
-     * `@param` array{
+     * @param array{
      *   name: string,
      *   display_name?: string,
      *   description?: string,
