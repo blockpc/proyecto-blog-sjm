@@ -18,8 +18,9 @@ final class SyncRolesCommand extends Command
 
     protected $description = 'Sincroniza, valida y limpia los roles definidos en el sistema';
 
-    public function handle(RoleSynchronizerService $sync): int
+    public function handle(RoleSynchronizerService $roleSynchronizerService): int
     {
+        $errors = 0;
         $check = (bool) $this->option('check');
         $orphans = (bool) $this->option('orphans');
         $prune = (bool) $this->option('prune');
@@ -33,14 +34,13 @@ final class SyncRolesCommand extends Command
         }
 
         if ($check) {
-            $errors = $this->handleCheck($sync);
+            $errors = $this->handleCheck($roleSynchronizerService);
         } elseif ($orphans) {
-            $errors = $this->handleOrphans($sync);
+            $errors = $this->handleOrphans($roleSynchronizerService);
         } elseif ($prune) {
-            $errors = $this->handlePrune($sync);
+            $errors = $this->handlePrune($roleSynchronizerService);
         } else {
-            $this->handleSync($sync);
-            $errors = 0;
+            $errors = $this->handleSync($roleSynchronizerService);
         }
 
         if ($errors > 0) {
@@ -53,10 +53,10 @@ final class SyncRolesCommand extends Command
         return 0;
     }
 
-    private function handleCheck(RoleSynchronizerService $sync): int
+    private function handleCheck(RoleSynchronizerService $roleSynchronizerService): int
     {
         $errors = 0;
-        $missing = $sync->getMissing();
+        $missing = $roleSynchronizerService->getMissing();
 
         if ($missing->isEmpty()) {
             $this->info('✅ Todo sincronizado.');
@@ -73,9 +73,9 @@ final class SyncRolesCommand extends Command
         return $errors;
     }
 
-    private function handleOrphans(RoleSynchronizerService $sync): int
+    private function handleOrphans(RoleSynchronizerService $roleSynchronizerService): int
     {
-        $orphans = $sync->getOrphans();
+        $orphans = $roleSynchronizerService->getOrphans();
 
         if ($orphans->isEmpty()) {
             $this->info('✅ No hay roles huérfanos.');
@@ -91,9 +91,9 @@ final class SyncRolesCommand extends Command
         return $orphans->count();
     }
 
-    private function handlePrune(RoleSynchronizerService $sync): int
+    private function handlePrune(RoleSynchronizerService $roleSynchronizerService): int
     {
-        $orphans = $sync->getOrphans();
+        $orphans = $roleSynchronizerService->getOrphans();
 
         if ($orphans->isEmpty()) {
             $this->info('✅ No hay roles huérfanos.');
@@ -107,15 +107,17 @@ final class SyncRolesCommand extends Command
             return 0;
         }
 
-        $deleted = $sync->prune();
+        $deleted = $roleSynchronizerService->prune();
         $this->info("🗑️ Eliminados: {$deleted} roles huérfanos.");
 
         return 0;
     }
 
-    private function handleSync(RoleSynchronizerService $sync): void
+    private function handleSync(RoleSynchronizerService $roleSynchronizerService): int
     {
-        $sync->sync();
+        $roleSynchronizerService->sync();
         $this->info('🎉 Roles sincronizados.');
+
+        return 0;
     }
 }

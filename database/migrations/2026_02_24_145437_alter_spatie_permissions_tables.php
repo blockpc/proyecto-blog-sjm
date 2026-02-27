@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::table($tableNames['permissions'], static function (Blueprint $table) {
             $table->string('display_name')->nullable();
             $table->string('description')->nullable();
-            $table->string('key')->nullable()->unique();
+            $table->string('key')->nullable();
         });
 
         Schema::table($tableNames['roles'], static function (Blueprint $table) {

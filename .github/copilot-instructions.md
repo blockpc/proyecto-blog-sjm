@@ -34,9 +34,9 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 ## Conventions
 
-- Para comandos de Laravel/PHP, usar `./vendor/bin/sail` por defecto.
-- Si una regla específica indica un comando distinto (por ejemplo, `vendor/bin/pint`), esa regla tiene prioridad.
-- Escribir y mantener tests con **Pest** (no PHPUnit estilo clásico), siguiendo la convención existente.
+- For Laravel/PHP commands, use `./vendor/bin/sail` by default.
+- If a specific rule indicates a different command (e.g., `vendor/bin/pint`), that rule takes priority.
+- Write and maintain tests with **Pest** (not classic PHPUnit style), following existing conventions.
 - You must follow all existing code conventions used in this application. When creating or editing a file, check sibling files for the correct structure, approach, and naming.
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
 - Check for existing components to reuse before writing a new one.

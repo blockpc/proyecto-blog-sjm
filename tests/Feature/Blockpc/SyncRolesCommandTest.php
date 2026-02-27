@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 use function Pest\Laravel\artisan;
 
-uses()->group('sistema', 'permissions', 'commands');
+uses()->group('sistema', 'roles', 'commands');
 
 beforeEach(function () {
     // Limpiar logs antes de cada test

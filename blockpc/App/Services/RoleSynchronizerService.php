@@ -12,7 +12,7 @@ final class RoleSynchronizerService
 {
     private ?Collection $existingRoles = null;
 
-    public function sync()
+    public function sync(): void
     {
         $missing = $this->getMissing();
         foreach ($missing as $roleData) {
@@ -21,7 +21,7 @@ final class RoleSynchronizerService
                 'display_name' => $roleData['display_name'] ?? null,
                 'description' => $roleData['description'] ?? null,
                 'is_editable' => $roleData['is_editable'] ?? true,
-                'guard_name' => $roleData['guard'] ?? 'web',
+                'guard_name' => $this->resolveGuardName($roleData),
             ]);
         }
 
@@ -44,7 +44,7 @@ final class RoleSynchronizerService
         return collect(RoleList::all())
             ->filter(function ($role) use ($existing) {
                 $name = $role['name'];
-                $guard = $role['guard_name'] ?? 'web';
+                $guard = $this->resolveGuardName($role);
 
                 return ! $existing->has("{$name}|{$guard}");
             });
@@ -58,7 +58,7 @@ final class RoleSynchronizerService
         return $existing->filter(function ($role) use ($defined) {
             return ! $defined->contains(function ($definedRole) use ($role) {
                 $name = $definedRole['name'];
-                $guard = $definedRole['guard_name'] ?? 'web';
+                $guard = $this->resolveGuardName($definedRole);
 
                 return $name === $role->name && $guard === $role->guard_name;
             });
@@ -72,7 +72,7 @@ final class RoleSynchronizerService
         return collect(RoleList::all())
             ->filter(function ($role) use ($existing) {
                 $name = $role['name'];
-                $guard = $role['guard_name'] ?? 'web';
+                $guard = $this->resolveGuardName($role);
                 $role = $existing->get("{$name}|{$guard}");
 
                 if (! $role) {
@@ -95,5 +95,20 @@ final class RoleSynchronizerService
         }
 
         return $deleted;
+    }
+
+    /**
+     * @param array{
+     *   name: string,
+     *   display_name?: string,
+     *   description?: string,
+     *   is_editable?: bool,
+     *   guard_name?: string,
+     *   guard?: string
+     * } $roleData
+     */
+    private function resolveGuardName(array $roleData): string
+    {
+        return $roleData['guard_name'] ?? $roleData['guard'] ?? 'web';
     }
 }

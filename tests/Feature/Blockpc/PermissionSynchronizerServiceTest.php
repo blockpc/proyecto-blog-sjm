@@ -110,6 +110,10 @@ it('getOrphans devuelve permisos no definidos en PermissionList', function () {
 });
 
 it('prune elimina permisos huérfanos y devuelve el total eliminado', function () {
+    $initialOrphansCount = app(PermissionSynchronizerService::class)
+        ->getOrphans()
+        ->count();
+
     $orphanOne = Permission::create([
         'name' => 'orphan-permission-test-1',
         'guard_name' => 'web',
@@ -126,11 +130,9 @@ it('prune elimina permisos huérfanos y devuelve el total eliminado', function (
         'description' => 'Permiso huérfano 2',
     ]);
 
-    $sync = app(PermissionSynchronizerService::class);
+    $deleted = app(PermissionSynchronizerService::class)->prune();
 
-    $deleted = $sync->prune();
-
-    expect($deleted)->toBe(2);
+    expect($deleted)->toBe($initialOrphansCount + 2);
 
     assertDatabaseMissing('permissions', ['id' => $orphanOne->id]);
     assertDatabaseMissing('permissions', ['id' => $orphanTwo->id]);
@@ -140,4 +142,13 @@ it('prune devuelve cero cuando no hay permisos huérfanos', function () {
     $sync = app(PermissionSynchronizerService::class);
 
     expect($sync->prune())->toBe(0);
+});
+
+it('lanza excepción cuando resolvePermiso recibe un nombre inválido', function () {
+    $sync = app(PermissionSynchronizerService::class);
+    $resolver = new ReflectionMethod(PermissionSynchronizerService::class, 'resolvePermiso');
+    $resolver->setAccessible(true);
+
+    expect(fn () => $resolver->invoke($sync, ['name' => '   ']))
+        ->toThrow(InvalidArgumentException::class, 'El permiso no tiene un nombre válido.');
 });

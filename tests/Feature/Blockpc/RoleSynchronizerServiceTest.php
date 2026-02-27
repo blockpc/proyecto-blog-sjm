@@ -7,7 +7,7 @@ use Database\Seeders\RolesAndPermissionsSeeder;
 
 use function Pest\Laravel\assertDatabaseHas;
 
-uses()->group('sistema', 'permissions');
+uses()->group('sistema', 'roles');
 
 beforeEach(function () {
     $this->seed(RolesAndPermissionsSeeder::class);
@@ -76,6 +76,11 @@ it('getOrphans devuelve roles no definidos en RoleList', function () {
 });
 
 it('prune elimina solo roles huérfanos editables y devuelve el total eliminado', function () {
+    $initialEditableOrphans = app(RoleSynchronizerService::class)
+        ->getOrphans()
+        ->where('is_editable', true)
+        ->count();
+
     $editableOrphan = Role::create([
         'name' => 'orphan-editable-test',
         'guard_name' => 'web',
@@ -92,11 +97,9 @@ it('prune elimina solo roles huérfanos editables y devuelve el total eliminado'
         'is_editable' => false,
     ]);
 
-    $sync = app(RoleSynchronizerService::class);
+    $deleted = app(RoleSynchronizerService::class)->prune();
 
-    $deleted = $sync->prune();
-
-    expect($deleted)->toBe(1);
+    expect($deleted - $initialEditableOrphans)->toBe(1);
     expect(Role::find($editableOrphan->id))->toBeNull();
     expect(Role::find($protectedOrphan->id))->not->toBeNull();
 });
