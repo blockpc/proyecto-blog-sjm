@@ -14,7 +14,7 @@ final class RoleList
      * - description: Descripción del role
      * - is_editable: Indica si el role es editable o no
      * - guard_name: Nombre del guard (opcional, por defecto 'web')
-     * [name, display_name, description, is_editable, permissions, guard_name (, opcional:web)]
+     * [name, display_name, description, is_editable, guard_name (opcional: 'web')]
      *
      * @return array<int, array{name: string, display_name: string, description: string, is_editable: bool, guard_name: string}>
      */

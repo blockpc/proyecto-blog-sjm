@@ -143,3 +143,12 @@ it('prune devuelve cero cuando no hay permisos huérfanos', function () {
 
     expect($sync->prune())->toBe(0);
 });
+
+it('lanza excepción cuando resolvePermiso recibe un nombre inválido', function () {
+    $sync = app(PermissionSynchronizerService::class);
+    $resolver = new ReflectionMethod(PermissionSynchronizerService::class, 'resolvePermiso');
+    $resolver->setAccessible(true);
+
+    expect(fn () => $resolver->invoke($sync, ['name' => '   ']))
+        ->toThrow(InvalidArgumentException::class, 'El permiso no tiene un nombre válido.');
+});

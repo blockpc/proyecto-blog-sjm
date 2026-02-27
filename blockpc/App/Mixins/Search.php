@@ -7,6 +7,7 @@ namespace Blockpc\App\Mixins;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use InvalidArgumentException;
 
 final class Search
 {
@@ -27,6 +28,10 @@ final class Search
 
             $this->where(function (Builder $query) use ($attributes, $searchPattern) {
                 foreach (Arr::wrap($attributes) as $attribute) {
+                    if (! is_string($attribute) || preg_match('/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*$/', $attribute) !== 1) {
+                        throw new InvalidArgumentException('Cada atributo de búsqueda debe ser un nombre de columna válido o una ruta de relación en formato relacion.columna.');
+                    }
+
                     $query->when(
                         str_contains($attribute, '.'),
                         function (Builder $query) use ($attribute, $searchPattern) {

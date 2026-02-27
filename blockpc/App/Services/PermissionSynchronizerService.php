@@ -100,7 +100,9 @@ final class PermissionSynchronizerService
         $name = $permiso['name'] ?? null;
 
         if (! is_string($name) || trim($name) === '') {
-            throw new \InvalidArgumentException('Permission name is required');
+            $invalidContext = json_encode($permiso, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+            throw new \InvalidArgumentException('El permiso no tiene un nombre válido. Definición recibida: '.$invalidContext);
         }
 
         return [
