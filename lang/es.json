@@ -24,5 +24,7 @@
     "Please verify your email address by clicking on the link we just emailed to you.": "Por favor, verifica tu dirección de correo electrónico haciendo clic en el enlace que acabamos de enviarte por correo electrónico.",
     "A new verification link has been sent to the email address you provided during registration.": "Se ha enviado un nuevo enlace de verificación a la dirección de correo electrónico que proporcionaste durante el registro.",
     "Resend verification email": "Reenviar correo de verificación",
-    "Log out": "Cerrar sesión"
+    "Log out": "Cerrar sesión",
+    "Repository": "Repositorio",
+    "Documentation": "Documentación"
 }
